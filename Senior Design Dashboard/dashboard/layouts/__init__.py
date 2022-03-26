@@ -24,11 +24,16 @@ def init(app: Dash):
 
 
     return html.Div(children=[
+
+            dcc.Store(id='place_holder'),
+
+            dcc.Store(id='place_holder_2'),
+
             html.Div([
                 html.Label('Infineum Smart Storage Device Beta-Prototype')
             ],style={'font-size':'50px', 'height': '100px'}),
 
-            html.Div([
+            html.Div(children=[
                 html.Div([
                     dcc.Tabs(id='shelves',
                     children=tabs,
@@ -37,12 +42,137 @@ def init(app: Dash):
 
             html.Div(style={'hieght':'100px'}),
 
-            html.Div(id='sample_info'),
+                html.Div(id='sample_info'),
 
                 html.Div([],style={'height':'50px'}),
-            ], style={'display':'text-inline', 'width':'55%'}),
+            ], style={'display':'inline-block', 'width':'55%', 'vertical-align':'top'}),
+
 
             html.Div([
 
-            ], style={'display':'text-inline','width':'45%'})
+                html.Div(style={'height':'50px'}),
+
+                html.Div([
+                    html.Button('Import',id='import', n_clicks=0, style={'height':'40px', 'width':'150px'})
+                ], style={'margin-left': '40px', 'display':'inline-block'}),
+
+                html.Div([
+                    html.Button('Export',id='export', n_clicks=0, style={'height':'40px', 'width':'150px'})
+                ], style={'margin-left': '60px', 'display':'inline-block'}),
+
+                html.Div(style={'height':'20px'}),
+
+                html.Div([
+                    html.Label('Placeholder',style={'width':'80px'})
+                ], style={'margin-left':'20px','width':'100px','display':'inline-block'}),
+
+                html.Div([
+                    html.Label('ELN Number',style={'width':'80px'})
+                ], style={'width':'100px','display':'inline-block'}),
+
+                html.Div([
+                    html.Label('Arrival Date',style={'width':'80px'})
+                ], style={'width':'100px','display':'inline-block'}),
+
+                html.Div([
+                    html.Label('Experation Date',style={'width':'100px'})
+                ], style={'width':'130px','display':'inline-block'}),
+
+                html.Div(style={'height':'20px'}),
+
+                html.Div([
+                    html.Label('Example input:',style={'width':'80px'})
+                ], style={'margin-left':'20px','width':'100px','display':'inline-block'}),
+
+                html.Div([
+                    html.Label('12345678',style={'width':'80px'})
+                ], style={'margin-left':'20px', 'width':'100px','display':'inline-block'}),
+
+                html.Div([
+                    html.Label('1/15/22',style={'width':'80px'})
+                ], style={'width':'100px','display':'inline-block'}),
+
+                html.Div([
+                    html.Label('5/3/25',style={'width':'100px'})
+                ], style={'width':'130px','display':'inline-block'}),
+
+                html.Div(style={'height':'20px'}),
+
+                html.Div([
+                    dcc.Input(id='input_1_placeholder', style={'width':'80px'})
+                ], style={'margin-left':'10px', 'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_1_ELN', style={'width':'80px'}),
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_1_arrival', style={'width':'80px'})
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_1_experation', style={'width':'80px'})
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div(style={'height':'20px'}),
+
+                html.Div([
+                    dcc.Input(id='input_2_placeholder', style={'width':'80px'})
+                ], style={'margin-left':'10px','width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_2_ELN', style={'width':'80px'}),
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_2_arrival', style={'width':'80px'})
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_2_experation', style={'width':'80px'})
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div(style={'height':'20px'}),
+
+                html.Div([
+                    dcc.Input(id='input_3_placeholder', style={'width':'80px'})
+                ], style={'margin-left':'10px','width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_3_ELN', style={'width':'80px'}),
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_3_arrival', style={'width':'80px'})
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_3_experation', style={'width':'80px'})
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div(style={'height':'20px'}),
+
+                html.Div([
+                    dcc.Input(id='input_4_placeholder', style={'width':'80px'})
+                ], style={'margin-left':'10px', 'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_4_ELN', style={'width':'80px'}),
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_4_arrival', style={'width':'80px'})
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div([
+                    dcc.Input(id='input_4_experation', style={'width':'80px'})
+                ], style={'width':'110px','display':'inline-block'}),
+
+                html.Div(style={'height':'20px'}),
+
+                html.Div([
+                    html.Button('Submit', id='submit_button', n_clicks=0, style={'width':'200px','margin-left':'120px'})
+                ])
+
+            ], style={'display':'inline-block','width':'45%','vertical-align':'top'})
         ])

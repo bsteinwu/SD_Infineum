@@ -1,9 +1,17 @@
+from pickle import FALSE, TRUE
+from sre_constants import SUCCESS
 import dash
 from dash.dependencies import Output, Input
+from numpy import true_divide
 from openpyxl import load_workbook
 import dash_core_components as dcc
 import dash_html_components as html
+from dashboard.checkdate import is_date
+from dashboard.datetodate import datetodate
+
 n = 0
+if_import = False
+if_export = False
 
 Shelf_Colors = {
     'Slot_1_Color':'white',
@@ -52,7 +60,7 @@ Shelf_Colors = {
     'Slot_44_Color':'white',
     'Slot_45_Color':'white'
     }
-wb = load_workbook('/Users/ortho/SD Prototpye/Senior Design Dashboard/Shelf Data.xlsx')
+wb = load_workbook('/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 ws = wb['Shelf 1']
 
 ## updates what is currently selected
@@ -154,3 +162,101 @@ def register(app:dash):
                     ]),
                 ], style={'Boarder':'solid', 'text-align':'center', 'font-size':'20px', 'margin-left': 'auto', 'margin-right' : 'auto'})
             ], style={'vertical-align':'top'})
+
+
+    @app.callback(
+        Output('place_holder','data'),
+        [Input('submit_button','n_clicks'),
+        Input('input_1_placeholder', 'value'),
+        Input('input_1_ELN', 'value'),
+        Input('input_1_arrival', 'value'),
+        Input('input_1_experation', 'value'),
+        Input('input_2_placeholder', 'value'),
+        Input('input_2_ELN', 'value'),
+        Input('input_2_arrival', 'value'),
+        Input('input_2_experation', 'value'),
+        Input('input_3_placeholder', 'value'),
+        Input('input_3_ELN', 'value'),
+        Input('input_3_arrival', 'value'),
+        Input('input_3_experation', 'value'),
+        Input('input_4_placeholder', 'value'),
+        Input('input_4_ELN', 'value'),
+        Input('input_4_arrival', 'value'),
+        Input('input_4_experation', 'value')])
+    def submission(submit_button,
+        input_1_placeholder, input_1_ELN, input_1_arrival, input_1_experation,
+        input_2_placeholder, input_2_ELN, input_2_arrival, input_2_experation,
+        input_3_placeholder, input_3_ELN, input_3_arrival, input_3_experation,
+        input_4_placeholder, input_4_ELN, input_4_arrival, input_4_experation):
+
+        submission = dash.callback_context
+        current_sample = submission.triggered[0]['prop_id'].split('.')[0]
+
+        date_check_arrival = FALSE
+        date_check_experation = FALSE
+
+        if current_sample == 'submit_button' and if_export == True or if_import == True:
+
+            try:
+                input_1_placeholder = int(input_1_placeholder)
+            except:
+                hello_world = 0
+            try:
+                input_1_ELN = int(input_1_ELN)
+            except:
+                hello_world = 0
+
+            if if_import == True:
+                if type(input_1_placeholder) == int and type(input_1_ELN) == int and is_date(input_1_arrival) == True and is_date(input_1_experation) == True:
+                    print('Check Correct')
+                    print('imported samples')
+                    for i in range(2,47):
+                        if ws.cell(row = i, column = 2).value == None:
+                            print(i)
+                            ws.cell(row = i, column= 2).value = input_1_ELN
+                            ws.cell(row = i, column= 3).value = datetodate(input_1_arrival)
+                            ws.cell(row = i, column= 4).value = datetodate(input_1_experation)
+                            break
+
+
+            if if_export == True:
+                if type(input_1_placeholder) == int and type(input_1_ELN) == int and is_date(input_1_arrival) == True and is_date(input_1_experation) == True:
+                    if  str(ws.cell(row = input_1_placeholder + 1, column = 2).value) == str(input_1_ELN) and str(ws.cell(row = input_1_placeholder + 1, column = 3).value) == datetodate(input_1_arrival) and str(ws.cell(row = input_1_placeholder + 1, column = 4).value) == datetodate(input_1_experation):
+                        ws.cell(row = input_1_placeholder + 1, column= 2).value = None
+                        ws.cell(row = input_1_placeholder + 1, column= 3).value = None
+                        ws.cell(row = input_1_placeholder + 1, column= 4).value = None
+
+            for i in range(2,47):
+                if ws.cell(row = i, column = 2).value is None:
+                    Shelf_Colors['Slot_' + str(i-1) + '_Color'] = 'white'
+                else:
+                    Shelf_Colors['Slot_' + str(i-1) + '_Color'] = 'black'
+
+            wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
+
+        return 0
+
+
+    @app.callback(
+        Output('place_holder_2','data'),
+        [Input('import','n_clicks'),
+        Input('export','n_clicks')]
+    )
+    def importvsexport(importded, exported):
+
+        global if_export, if_import
+
+        importvsexport = dash.callback_context
+        sample_status = importvsexport.triggered[0]['prop_id'].split('.')[0]
+
+        if sample_status == 'import':
+            print('importing')
+            if_export = False
+            if_import = True
+
+        elif sample_status == 'export':
+            print('exporting')
+            if_export = True
+            if_import = False
+
+        return 0
