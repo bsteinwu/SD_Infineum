@@ -52,7 +52,7 @@ Shelf_Colors = {
     'Slot_44_Color':'white',
     'Slot_45_Color':'white'
     }
-wb = load_workbook('/Users/ortho/SD Prototpye/Senior Design Dashboard/Shelf Data.xlsx')
+wb = load_workbook('/Users/Luke Huber/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 ws = wb['Shelf 1']
 
 ## updates what is currently selected
