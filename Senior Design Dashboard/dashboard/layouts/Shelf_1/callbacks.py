@@ -372,6 +372,7 @@ def register(app:dash):
                             if_import = False
                             import_button_style['background-color'] = '#e7e7e7'
                             export_button_style['background-color'] = '#e7e7e7'
+                            
                             arduino.write(bytes(input_1_placeholder, 'utf-8'))
                             wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 
