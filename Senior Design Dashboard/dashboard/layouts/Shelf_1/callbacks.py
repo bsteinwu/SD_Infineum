@@ -8,8 +8,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dashboard.checkdate import is_date
 from dashboard.datetodate import datetodate
-import serial
+from dash.exceptions import PreventUpdate
 import time
+import serial
 
 #e7e7e7 is gray base
 
@@ -17,8 +18,6 @@ import_button_style = {'height':'40px', 'width':'150px', 'background-color':'#e7
 export_button_style = {'height':'40px', 'width':'150px', 'background-color':'#e7e7e7'}
 submit_button_style = {'width':'200px','margin-left':'120px', 'background-color':'#e7e7e7'}
 finalize_button_style = {'width':'200px','margin-left':'120px', 'background-color':'#e7e7e7'}
-
-arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1)
 
 n = 0
 if_import = False
@@ -203,71 +202,92 @@ def register(app:dash):
                         html.Button(id='Slot_45', n_clicks=0, style={'border-radius':'50%', 'height':'50px', 'width':'50px', 'border': '2px solid black', 'background-color':Shelf_Colors['Slot_45_Color']})
                         ], style = {'display':'inline-block', 'width':'70px'}),
                     ], style={'height':'70px'}),
+
+                    html.Div([
+                        html.Table([
+                            html.Tr([
+                                html.Th(str(ws.cell(row = 1, column = 2).value)),
+                                html.Th(str(ws.cell(row = 1, column = 3).value)),
+                                html.Th(str(ws.cell(row = 1, column = 4).value)),
+                            ]),
+                            html.Tr([
+                                html.Th(id = 'sample_info_column_1', children=['No sample Selected']),
+                                html.Th(id = 'sample_info_column_2', children=['']),
+                                html.Th(id = 'sample_info_column_3', children=['']),
+                            ]),
+                        ], style={'Boarder':'solid', 'text-align':'center', 'font-size':'20px', 'margin-left': 'auto', 'margin-right' : 'auto'})
+                    ], style={'vertical-align':'top'})
                 ], style={})
 
-    @app.callback(Output('sample_info', 'children'),
-              [Input('Slot_1', 'n_clicks'),
-              Input('Slot_2', 'n_clicks'),
-              Input('Slot_3', 'n_clicks'),
-              Input('Slot_4', 'n_clicks'),
-              Input('Slot_5', 'n_clicks'),
-              Input('Slot_6', 'n_clicks'),
-              Input('Slot_7', 'n_clicks'),
-              Input('Slot_8', 'n_clicks'),
-              Input('Slot_9', 'n_clicks'),
-              Input('Slot_10', 'n_clicks'),
-              Input('Slot_11', 'n_clicks'),
-              Input('Slot_12', 'n_clicks'),
-              Input('Slot_13', 'n_clicks'),
-              Input('Slot_14', 'n_clicks'),
-              Input('Slot_15', 'n_clicks'),
-              Input('Slot_16', 'n_clicks'),
-              Input('Slot_17', 'n_clicks'),
-              Input('Slot_18', 'n_clicks'),
-              Input('Slot_19', 'n_clicks'),
-              Input('Slot_20', 'n_clicks'),
-              Input('Slot_21', 'n_clicks'),
-              Input('Slot_22', 'n_clicks'),
-              Input('Slot_23', 'n_clicks'),
-              Input('Slot_24', 'n_clicks'),
-              Input('Slot_25', 'n_clicks'),
-              Input('Slot_26', 'n_clicks'),
-              Input('Slot_27', 'n_clicks'),
-              Input('Slot_28', 'n_clicks'),
-              Input('Slot_29', 'n_clicks'),
-              Input('Slot_30', 'n_clicks'),
-              Input('Slot_31', 'n_clicks'),
-              Input('Slot_32', 'n_clicks'),
-              Input('Slot_33', 'n_clicks'),
-              Input('Slot_34', 'n_clicks'),
-              Input('Slot_35', 'n_clicks'),
-              Input('Slot_36', 'n_clicks'),
-              Input('Slot_37', 'n_clicks'),
-              Input('Slot_38', 'n_clicks'),
-              Input('Slot_39', 'n_clicks'),
-              Input('Slot_40', 'n_clicks'),
-              Input('Slot_41', 'n_clicks'),
-              Input('Slot_42', 'n_clicks'),
-              Input('Slot_43', 'n_clicks'),
-              Input('Slot_44', 'n_clicks'),
-              Input('Slot_45', 'n_clicks'),
-              ])
+    @app.callback([
+            Output('sample_info_column_1', 'children'),
+            Output('sample_info_column_2', 'children'),
+            Output('sample_info_column_3', 'children')],
+            [Input('Slot_1', 'n_clicks'),
+            Input('Slot_2', 'n_clicks'),
+            Input('Slot_3', 'n_clicks'),
+            Input('Slot_4', 'n_clicks'),
+            Input('Slot_5', 'n_clicks'),
+            Input('Slot_6', 'n_clicks'),
+            Input('Slot_7', 'n_clicks'),
+            Input('Slot_8', 'n_clicks'),
+            Input('Slot_9', 'n_clicks'),
+            Input('Slot_10', 'n_clicks'),
+            Input('Slot_11', 'n_clicks'),
+            Input('Slot_12', 'n_clicks'),
+            Input('Slot_13', 'n_clicks'),
+            Input('Slot_14', 'n_clicks'),
+            Input('Slot_15', 'n_clicks'),
+            Input('Slot_16', 'n_clicks'),
+            Input('Slot_17', 'n_clicks'),
+            Input('Slot_18', 'n_clicks'),
+            Input('Slot_19', 'n_clicks'),
+            Input('Slot_20', 'n_clicks'),
+            Input('Slot_21', 'n_clicks'),
+            Input('Slot_22', 'n_clicks'),
+            Input('Slot_23', 'n_clicks'),
+            Input('Slot_24', 'n_clicks'),
+            Input('Slot_25', 'n_clicks'),
+            Input('Slot_26', 'n_clicks'),
+            Input('Slot_27', 'n_clicks'),
+            Input('Slot_28', 'n_clicks'),
+            Input('Slot_29', 'n_clicks'),
+            Input('Slot_30', 'n_clicks'),
+            Input('Slot_31', 'n_clicks'),
+            Input('Slot_32', 'n_clicks'),
+            Input('Slot_33', 'n_clicks'),
+            Input('Slot_34', 'n_clicks'),
+            Input('Slot_35', 'n_clicks'),
+            Input('Slot_36', 'n_clicks'),
+            Input('Slot_37', 'n_clicks'),
+            Input('Slot_38', 'n_clicks'),
+            Input('Slot_39', 'n_clicks'),
+            Input('Slot_40', 'n_clicks'),
+            Input('Slot_41', 'n_clicks'),
+            Input('Slot_42', 'n_clicks'),
+            Input('Slot_43', 'n_clicks'),
+            Input('Slot_44', 'n_clicks'),
+            Input('Slot_45', 'n_clicks'),
+            ])
     def Display_Shelves(
     Slot_1,Slot_2,Slot_3,Slot_4,Slot_5,Slot_6,Slot_7,Slot_8,Slot_9,Slot_10,
     Slot_11,Slot_12,Slot_13,Slot_14,Slot_15,Slot_16,Slot_17,Slot_18,Slot_19,Slot_20,
     Slot_21,Slot_22,Slot_23,Slot_24,Slot_25,Slot_26,Slot_27,Slot_28,Slot_29,Slot_30,
     Slot_31,Slot_32,Slot_33,Slot_34,Slot_35,Slot_36,Slot_37,Slot_38,Slot_39,Slot_40,
     Slot_41,Slot_42,Slot_43,Slot_44,Slot_45):
-        global n
-        update_sample_info = dash.callback_context
-        current_sample = update_sample_info.triggered[0]['prop_id'].split('.')[0]
+        global n, arduino
+        ELN_number = 'No sample selected'
+        Arrial_date = ''
+        experation_date = ''
 
         if n == 0:
-            ELN_number = 'No sample selected'
-            Arrial_date = ''
-            experation_date =''
+            arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1)
             n = n + 1
+            raise PreventUpdate
+            
         else:
+            update_sample_info = dash.callback_context
+            current_sample = update_sample_info.triggered[0]['prop_id'].split('.')[0]
             for i in range(2,47):
                 if current_sample == 'Slot_' + str(i-1):
                     if Shelf_Colors['Slot_' + str(i-1) + '_Color'] == 'black':
@@ -279,21 +299,7 @@ def register(app:dash):
                         Arrial_date = ''
                         experation_date =''
 
-        return html.Div([
-                html.Table([
-                    html.Tr([
-                        html.Th(str(ws.cell(row = 1, column = 2).value)),
-                        html.Th(str(ws.cell(row = 1, column = 3).value)),
-                        html.Th(str(ws.cell(row = 1, column =4).value)),
-                    ]),
-                    html.Tr([
-                        html.Th(ELN_number),
-                        html.Th(Arrial_date),
-                        html.Th(experation_date),
-                    ]),
-                ], style={'Boarder':'solid', 'text-align':'center', 'font-size':'20px', 'margin-left': 'auto', 'margin-right' : 'auto'})
-            ], style={'vertical-align':'top'})
-
+            return [ELN_number, Arrial_date, experation_date]
 
 
 
@@ -348,6 +354,7 @@ def register(app:dash):
             export_button_style['background-color'] = 'gray'
 
         elif submission_status == 'submit_button':
+
             if if_export == True or if_import == True:
 
                 try:
@@ -361,31 +368,103 @@ def register(app:dash):
 
                 if if_import == True:
                     if type(input_1_placeholder) == int and type(input_1_ELN) == int and is_date(input_1_arrival) == True and is_date(input_1_experation) == True:
-                        print('Check Correct')
-                        print('imported samples')
+
+                        time.sleep(2)
+                        arduino.write(bytes('LED', 'utf-8'))
+                        time.sleep(2)
+                        arduino.write(bytes(str(input_1_placeholder), 'utf-8'))
+
                         if ws.cell(row = input_1_placeholder+1, column= 2).value == None:
-                            #print(ws.cell(row = input_1_placeholder+1, column= 2).value)
-                            #print('importing Complete!')
                             ws.cell(row = input_1_placeholder+1, column= 2).value = input_1_ELN
                             ws.cell(row = input_1_placeholder+1, column= 3).value = datetodate(input_1_arrival)
                             ws.cell(row = input_1_placeholder+1, column= 4).value = datetodate(input_1_experation)
-                            if_import = False
-                            import_button_style['background-color'] = '#e7e7e7'
-                            export_button_style['background-color'] = '#e7e7e7'
-                            
-                            arduino.write(bytes(input_1_placeholder, 'utf-8'))
-                            wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
+                    
+                    if type(input_2_placeholder) == int and type(input_2_ELN) == int and is_date(input_2_arrival) == True and is_date(input_2_experation) == True:
+
+                        time.sleep(2)
+                        arduino.write(bytes('LED', 'utf-8'))
+                        time.sleep(2)
+                        arduino.write(bytes(str(input_2_placeholder), 'utf-8'))
+
+                        if ws.cell(row = input_2_placeholder+1, column= 2).value == None:
+                            ws.cell(row = input_2_placeholder+1, column= 2).value = input_1_ELN
+                            ws.cell(row = input_2_placeholder+1, column= 3).value = datetodate(input_2_arrival)
+                            ws.cell(row = input_2_placeholder+1, column= 4).value = datetodate(input_2_experation)
+
+                    if type(input_3_placeholder) == int and type(input_3_ELN) == int and is_date(input_3_arrival) == True and is_date(input_3_experation) == True:
+
+                        time.sleep(2)
+                        arduino.write(bytes('LED', 'utf-8'))
+                        time.sleep(2)
+                        arduino.write(bytes(str(input_3_placeholder), 'utf-8'))
+
+                        if ws.cell(row = input_3_placeholder+1, column= 2).value == None:
+                            ws.cell(row = input_3_placeholder+1, column= 2).value = input_1_ELN
+                            ws.cell(row = input_3_placeholder+1, column= 3).value = datetodate(input_3_arrival)
+                            ws.cell(row = input_3_placeholder+1, column= 4).value = datetodate(input_3_experation)
+
+                    if type(input_4_placeholder) == int and type(input_4_ELN) == int and is_date(input_4_arrival) == True and is_date(input_4_experation) == True:
+
+                        time.sleep(2)
+                        arduino.write(bytes('LED', 'utf-8'))
+                        time.sleep(2)
+                        arduino.write(bytes(str(input_4_placeholder), 'utf-8'))
+
+                        if ws.cell(row = input_4_placeholder+1, column= 2).value == None:
+                            ws.cell(row = input_4_placeholder+1, column= 2).value = input_1_ELN
+                            ws.cell(row = input_4_placeholder+1, column= 3).value = datetodate(input_4_arrival)
+                            ws.cell(row = input_4_placeholder+1, column= 4).value = datetodate(input_4_experation)
+                    
+                    import_button_style['background-color'] = '#e7e7e7'
+                    export_button_style['background-color'] = '#e7e7e7'
+                    if_import = False
+                    wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 
 
                 if if_export == True:
                     if type(input_1_placeholder) == int and type(input_1_ELN) == int and is_date(input_1_arrival) == True and is_date(input_1_experation) == True:
                         if  str(ws.cell(row = input_1_placeholder + 1, column = 2).value) == str(input_1_ELN) and str(ws.cell(row = input_1_placeholder + 1, column = 3).value) == datetodate(input_1_arrival) and str(ws.cell(row = input_1_placeholder + 1, column = 4).value) == datetodate(input_1_experation):
+                            time.sleep(2)
+                            arduino.write(bytes('LED', 'utf-8'))
+                            time.sleep(2)
+                            arduino.write(bytes(str(input_1_placeholder), 'utf-8'))
                             ws.cell(row = input_1_placeholder + 1, column= 2).value = None
                             ws.cell(row = input_1_placeholder + 1, column= 3).value = None
                             ws.cell(row = input_1_placeholder + 1, column= 4).value = None
-                            if_export = False
-                            import_button_style['background-color'] = '#e7e7e7'
-                            export_button_style['background-color'] = '#e7e7e7'
-                            wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
+
+                    if type(input_2_placeholder) == int and type(input_2_ELN) == int and is_date(input_2_arrival) == True and is_date(input_2_experation) == True:
+                        if  str(ws.cell(row = input_2_placeholder + 1, column = 2).value) == str(input_2_ELN) and str(ws.cell(row = input_2_placeholder + 1, column = 3).value) == datetodate(input_2_arrival) and str(ws.cell(row = input_2_placeholder + 1, column = 4).value) == datetodate(input_2_experation):
+                            time.sleep(2)
+                            arduino.write(bytes('LED', 'utf-8'))
+                            time.sleep(2)
+                            arduino.write(bytes(str(input_2_placeholder), 'utf-8'))
+                            ws.cell(row = input_2_placeholder + 1, column= 2).value = None
+                            ws.cell(row = input_2_placeholder + 1, column= 3).value = None
+                            ws.cell(row = input_2_placeholder + 1, column= 4).value = None
+
+                    if type(input_3_placeholder) == int and type(input_3_ELN) == int and is_date(input_3_arrival) == True and is_date(input_3_experation) == True:
+                        if  str(ws.cell(row = input_3_placeholder + 1, column = 2).value) == str(input_3_ELN) and str(ws.cell(row = input_3_placeholder + 1, column = 3).value) == datetodate(input_3_arrival) and str(ws.cell(row = input_3_placeholder + 1, column = 4).value) == datetodate(input_3_experation):
+                            time.sleep(2)
+                            arduino.write(bytes('LED', 'utf-8'))
+                            time.sleep(2)
+                            arduino.write(bytes(str(input_3_placeholder), 'utf-8'))
+                            ws.cell(row = input_3_placeholder + 1, column= 2).value = None
+                            ws.cell(row = input_3_placeholder + 1, column= 3).value = None
+                            ws.cell(row = input_3_placeholder + 1, column= 4).value = None
+                    
+                    if type(input_4_placeholder) == int and type(input_4_ELN) == int and is_date(input_4_arrival) == True and is_date(input_4_experation) == True:
+                        if  str(ws.cell(row = input_4_placeholder + 1, column = 2).value) == str(input_4_ELN) and str(ws.cell(row = input_4_placeholder + 1, column = 3).value) == datetodate(input_4_arrival) and str(ws.cell(row = input_4_placeholder + 1, column = 4).value) == datetodate(input_4_experation):
+                            time.sleep(2)
+                            arduino.write(bytes('LED', 'utf-8'))
+                            time.sleep(2)
+                            arduino.write(bytes(str(input_4_placeholder), 'utf-8'))
+                            ws.cell(row = input_4_placeholder + 1, column= 2).value = None
+                            ws.cell(row = input_4_placeholder + 1, column= 3).value = None
+                            ws.cell(row = input_4_placeholder + 1, column= 4).value = None
+
+                    if_export = False
+                    import_button_style['background-color'] = '#e7e7e7'
+                    export_button_style['background-color'] = '#e7e7e7'
+                    wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 
         return [import_button_style, export_button_style]
