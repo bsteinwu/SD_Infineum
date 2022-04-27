@@ -1,5 +1,6 @@
 from shelve import Shelf
 from sre_constants import SUCCESS
+from weakref import finalize
 import dash
 from dash.dependencies import Output, Input
 from numpy import true_divide
@@ -23,6 +24,8 @@ n = 0
 if_import = False
 if_export = False
 Shelf_Colors = {}
+samples = 0
+sample_location = []
 
 wb = load_workbook('/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 ws = wb['Shelf 1']
@@ -306,10 +309,12 @@ def register(app:dash):
 
     @app.callback(
         [Output('import','style'),
-        Output('export','style')],
+        Output('export','style'),
+        Output('user_entry', 'children')],
         [Input('submit_button','n_clicks'),
         Input('import','n_clicks'),
         Input('export','n_clicks'),
+        Input('finalize_button', 'n_clicks'),
         Input('input_1_placeholder', 'value'),
         Input('input_1_ELN', 'value'),
         Input('input_1_arrival', 'value'),
@@ -326,19 +331,20 @@ def register(app:dash):
         Input('input_4_ELN', 'value'),
         Input('input_4_arrival', 'value'),
         Input('input_4_experation', 'value')])
-    def submission(submit_button, importded, exported,
+    def submission(submit_button, importded, exported, fialize_button,
         input_1_placeholder, input_1_ELN, input_1_arrival, input_1_experation,
         input_2_placeholder, input_2_ELN, input_2_arrival, input_2_experation,
         input_3_placeholder, input_3_ELN, input_3_arrival, input_3_experation,
         input_4_placeholder, input_4_ELN, input_4_arrival, input_4_experation):
 
-        global if_export, if_import, import_button_style, export_button_style
+        global if_export, if_import, import_button_style, export_button_style, samples, sample_location
 
         submission = dash.callback_context
         submission_status = submission.triggered[0]['prop_id'].split('.')[0]
 
         date_check_arrival = False
         date_check_experation = False
+        user_entry = dash.no_update
         if submission_status == 'import':
             if_export = False
             if_import = True
@@ -378,6 +384,10 @@ def register(app:dash):
                             ws.cell(row = input_1_placeholder+1, column= 2).value = input_1_ELN
                             ws.cell(row = input_1_placeholder+1, column= 3).value = datetodate(input_1_arrival)
                             ws.cell(row = input_1_placeholder+1, column= 4).value = datetodate(input_1_experation)
+                        
+                        samples = samples + 1
+
+                        sample_location.append(input_1_placeholder)
                     
                     if type(input_2_placeholder) == int and type(input_2_ELN) == int and is_date(input_2_arrival) == True and is_date(input_2_experation) == True:
 
@@ -391,6 +401,10 @@ def register(app:dash):
                             ws.cell(row = input_2_placeholder+1, column= 3).value = datetodate(input_2_arrival)
                             ws.cell(row = input_2_placeholder+1, column= 4).value = datetodate(input_2_experation)
 
+                        samples = samples + 1
+
+                        sample_location.append(input_2_placeholder)
+
                     if type(input_3_placeholder) == int and type(input_3_ELN) == int and is_date(input_3_arrival) == True and is_date(input_3_experation) == True:
 
                         time.sleep(2)
@@ -402,6 +416,10 @@ def register(app:dash):
                             ws.cell(row = input_3_placeholder+1, column= 2).value = input_1_ELN
                             ws.cell(row = input_3_placeholder+1, column= 3).value = datetodate(input_3_arrival)
                             ws.cell(row = input_3_placeholder+1, column= 4).value = datetodate(input_3_experation)
+
+                        samples = samples + 1
+
+                        sample_location.append(input_3_placeholder)
 
                     if type(input_4_placeholder) == int and type(input_4_ELN) == int and is_date(input_4_arrival) == True and is_date(input_4_experation) == True:
 
@@ -415,10 +433,18 @@ def register(app:dash):
                             ws.cell(row = input_4_placeholder+1, column= 3).value = datetodate(input_4_arrival)
                             ws.cell(row = input_4_placeholder+1, column= 4).value = datetodate(input_4_experation)
                     
-                    import_button_style['background-color'] = '#e7e7e7'
-                    export_button_style['background-color'] = '#e7e7e7'
-                    if_import = False
-                    wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
+                        samples = samples + 1
+
+                        sample_location.append(input_4_placeholder)
+                    
+                    if samples > 0:
+                        user_entry = html.Div(
+                            [html.Label('Please place the samples into the lit up spots')],
+                            style = {'margin-left':'120px'})  
+                        import_button_style['background-color'] = '#e7e7e7'
+                        export_button_style['background-color'] = '#e7e7e7'
+                        if_import = False
+                        wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 
 
                 if if_export == True:
@@ -431,6 +457,8 @@ def register(app:dash):
                             ws.cell(row = input_1_placeholder + 1, column= 2).value = None
                             ws.cell(row = input_1_placeholder + 1, column= 3).value = None
                             ws.cell(row = input_1_placeholder + 1, column= 4).value = None
+                        samples = samples + 1
+                        sample_location.append(input_1_placeholder)
 
                     if type(input_2_placeholder) == int and type(input_2_ELN) == int and is_date(input_2_arrival) == True and is_date(input_2_experation) == True:
                         if  str(ws.cell(row = input_2_placeholder + 1, column = 2).value) == str(input_2_ELN) and str(ws.cell(row = input_2_placeholder + 1, column = 3).value) == datetodate(input_2_arrival) and str(ws.cell(row = input_2_placeholder + 1, column = 4).value) == datetodate(input_2_experation):
@@ -441,6 +469,8 @@ def register(app:dash):
                             ws.cell(row = input_2_placeholder + 1, column= 2).value = None
                             ws.cell(row = input_2_placeholder + 1, column= 3).value = None
                             ws.cell(row = input_2_placeholder + 1, column= 4).value = None
+                        samples = samples + 1
+                        sample_location.append(input_2_placeholder)
 
                     if type(input_3_placeholder) == int and type(input_3_ELN) == int and is_date(input_3_arrival) == True and is_date(input_3_experation) == True:
                         if  str(ws.cell(row = input_3_placeholder + 1, column = 2).value) == str(input_3_ELN) and str(ws.cell(row = input_3_placeholder + 1, column = 3).value) == datetodate(input_3_arrival) and str(ws.cell(row = input_3_placeholder + 1, column = 4).value) == datetodate(input_3_experation):
@@ -451,6 +481,8 @@ def register(app:dash):
                             ws.cell(row = input_3_placeholder + 1, column= 2).value = None
                             ws.cell(row = input_3_placeholder + 1, column= 3).value = None
                             ws.cell(row = input_3_placeholder + 1, column= 4).value = None
+                        samples = samples + 1
+                        sample_location.append(input_3_placeholder)
                     
                     if type(input_4_placeholder) == int and type(input_4_ELN) == int and is_date(input_4_arrival) == True and is_date(input_4_experation) == True:
                         if  str(ws.cell(row = input_4_placeholder + 1, column = 2).value) == str(input_4_ELN) and str(ws.cell(row = input_4_placeholder + 1, column = 3).value) == datetodate(input_4_arrival) and str(ws.cell(row = input_4_placeholder + 1, column = 4).value) == datetodate(input_4_experation):
@@ -461,10 +493,25 @@ def register(app:dash):
                             ws.cell(row = input_4_placeholder + 1, column= 2).value = None
                             ws.cell(row = input_4_placeholder + 1, column= 3).value = None
                             ws.cell(row = input_4_placeholder + 1, column= 4).value = None
+                        samples = samples + 1
+                        sample_location.append(input_4_placeholder)
+                    
+                    if samples > 0:
+                        user_entry = html.Div(
+                            [html.Label('Please take all the samples that are lit up')],
+                            style = {'margin-left':'120px'})  
+                        if_export = False
+                        import_button_style['background-color'] = '#e7e7e7'
+                        export_button_style['background-color'] = '#e7e7e7'
+                        wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 
-                    if_export = False
-                    import_button_style['background-color'] = '#e7e7e7'
-                    export_button_style['background-color'] = '#e7e7e7'
-                    wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
+            if submission_status == 'finalize_button':
+                if samples > 0:
+                    for i in range(0,samples):
+                        time.sleep(2)
+                        arduino.write(bytes('Sensor', 'utf-8'))
+                        time.sleep(2)
+                        arduino.write(bytes(sample_location[i], 'utf-8'))
 
-        return [import_button_style, export_button_style]
+        
+        return [import_button_style, export_button_style, user_entry]

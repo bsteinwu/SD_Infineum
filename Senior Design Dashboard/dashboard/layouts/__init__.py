@@ -180,7 +180,11 @@ def init(app:Dash):
 
                 html.Div([
                     html.Button('Completed Action', id='finalize_button', n_clicks=0, style = {'width':'200px','margin-left':'120px', 'background-color':'#e7e7e7'})
-                ])
+                ]),
+
+                html.Div(style={'height':'30px'}),
+
+                html.Div(id='user_entry')
                 
             ], style={'display':'inline-block','width':'45%','vertical-align':'top'})
         ])
