@@ -372,6 +372,8 @@ def register(app:dash):
                 except:
                     hello_world = 0
 
+
+                       
                 if if_import == True:
                     if type(input_1_placeholder) == int and type(input_1_ELN) == int and is_date(input_1_arrival) == True and is_date(input_1_experation) == True:
 
@@ -454,6 +456,7 @@ def register(app:dash):
                             arduino.write(bytes('LED', 'utf-8'))
                             time.sleep(2)
                             arduino.write(bytes(str(input_1_placeholder), 'utf-8'))
+                    
                             ws.cell(row = input_1_placeholder + 1, column= 2).value = None
                             ws.cell(row = input_1_placeholder + 1, column= 3).value = None
                             ws.cell(row = input_1_placeholder + 1, column= 4).value = None
@@ -505,13 +508,23 @@ def register(app:dash):
                         export_button_style['background-color'] = '#e7e7e7'
                         wb.save('C:/Users/ortho/OneDrive - stevens.edu/Documents/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 
-            if submission_status == 'finalize_button':
-                if samples > 0:
-                    for i in range(0,samples):
-                        time.sleep(2)
-                        arduino.write(bytes('Sensor', 'utf-8'))
-                        time.sleep(2)
-                        arduino.write(bytes(sample_location[i], 'utf-8'))
+        if submission_status == 'finalize_button':
+            
+            time.sleep(2)
+            arduino.write(bytes('LED', 'utf-8'))
+            time.sleep(2)
+            arduino.write(bytes(str(input_1_placeholder), 'utf-8'))
+            
+            if_export = False
+            if_import = False
+            samples = 0
+            
+            #if samples > 0:
+            #    for i in range(0,samples):
+            #        time.sleep(2)
+            #        arduino.write(bytes('Sensor', 'utf-8'))
+            #        time.sleep(2)
+                    #arduino.write(bytes(sample_location[i], 'utf-8'))
 
         
         return [import_button_style, export_button_style, user_entry]

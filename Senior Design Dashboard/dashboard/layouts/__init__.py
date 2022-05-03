@@ -25,7 +25,7 @@ def init(app:Dash):
             dcc.Store(id='place_holder_2'),
 
             html.Div([
-                html.Label('Infineum Smart Storage Device Beta-Prototype')
+                html.Label('Infineum Smart Storage Prototype')
             ],style={'font-size':'50px', 'height': '100px'}),
 
             html.Div(children=[
