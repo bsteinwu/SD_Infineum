@@ -1,8 +1,51 @@
 import dash
 from dash.dependencies import Output, Input
-from openpyxl import load_workbook
-import dash_core_components as dcc
-import dash_html_components as html
+from openpyxl import load_workbook, Workbook
+from dash import html, dcc
+import os.path
+
+n = 0
+
+# n_slots = 4    
+# slot = []
+# empty_color = 'white'
+# full_color = 'black'
+
+# for i in range(n_slots+1):                     #create shelf colors dictionary
+#     slot_name = 'Slot_'+str(i)
+#     slot.append(slot_name)
+#     Shelf_Colors = dict.fromkeys(slot, empty_color)
+
+# for i in range(n_slots+1):                     #create shelf colors dictionary
+#     slot_name = 'Slot_'+str(i)
+#     slot.append(slot_name)
+#     Shelf_Colors = dict.fromkeys(slot, empty_color)
+
+# book_name = 'Shelf Data.xlsx'
+# file_exists = os.path.exists(book_name)
+
+# # def create_workbook(path):
+# #     '''Create new empty Excel workbook in current directory if it does not exist.'''
+# #     workbook = Workbook()
+# #     sheet = workbook.active
+# #     sheet["A1"] = "Location Number"
+# #     sheet["B1"] = "ELN Number"
+# #     sheet["C1"] = "Arrival Date"
+# #     sheet["D1"] = "Expiration Date"
+# #     workbook.save(path)
+    
+# if file_exists:           #check if Excel file exists in current path
+#     print('')
+#     print(f'The file {book_name} exists.')
+# else:
+#     print('')
+#     print(f'The file {book_name} does not exist; creating new workbook.') 
+#     # create_workbook(book_name)
+    
+    
+# wb = load_workbook('Shelf Data.xlsx')    
+# ws = wb['Shelf 1']
+
 n = 0
 
 Shelf_Colors = {
@@ -52,7 +95,8 @@ Shelf_Colors = {
     'Slot_44_Color':'white',
     'Slot_45_Color':'white'
     }
-wb = load_workbook('/Users/ortho/SD Prototpye/Senior Design Dashboard/Shelf Data.xlsx')
+# wb = load_workbook('/Users/ortho/SD Prototpye/Senior Design Dashboard/Shelf Data.xlsx')
+wb = load_workbook('/Users/camer/GitHub/SD_Infineum/Senior Design Dashboard/Shelf Data.xlsx')
 ws = wb['Shelf 1']
 
 ## updates what is currently selected
@@ -61,9 +105,6 @@ for i in range(2,47):
     if ws.cell(row = i, column = 2).value is None:
         continue
     Shelf_Colors['Slot_' + str(i-1) + '_Color'] = 'black'
-
-
-
 
 def register(app:dash):
     @app.callback(Output('sample_info', 'children'),
